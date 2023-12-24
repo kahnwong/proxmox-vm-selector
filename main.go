@@ -7,9 +7,10 @@ import (
 	"os"
 	"sort"
 
+	"github.com/luthermonson/go-proxmox"
+
 	"github.com/charmbracelet/huh"
 	"github.com/joho/godotenv"
-	"github.com/luthermonson/go-proxmox"
 )
 
 // base
@@ -158,18 +159,23 @@ func main() {
 
 	virtualMachinesToPowerOff := subtractArrays(virtualMachinesAll, virtualMachinesToPowerOn)
 
+	vmPowerOnCounter := 0
 	for _, vmName := range virtualMachinesToPowerOn {
 		for _, vm := range vms {
 			if vmName == vm.Name {
-				fmt.Printf("▶️ Starting %s...\n", vmName)
-				_, err = vm.Start(context.Background())
-				if err != nil {
-					fmt.Println(err)
+				if vm.Status != "running" {
+					fmt.Printf("▶️ Starting %s...\n", vmName)
+					vmPowerOnCounter = vmPowerOnCounter + 1
+
+					_, err = vm.Start(context.Background())
+					if err != nil {
+						fmt.Println(err)
+					}
 				}
 			}
 		}
 	}
-	if len(virtualMachinesToPowerOn) == 0 {
+	if vmPowerOnCounter == 0 {
 		fmt.Println("No virtual machines to start")
 	}
 
