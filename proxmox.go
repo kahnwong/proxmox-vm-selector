@@ -39,11 +39,14 @@ func getNode(client *proxmox.Client) (*proxmox.Node, error) {
 
 func getVMs(node *proxmox.Node) (proxmox.VirtualMachines, error) {
 	vms, err := node.VirtualMachines(context.Background())
+	if err != nil {
+		return nil, err
+	}
 
 	// sort output by VM name
 	sort.Slice(vms, func(i, j int) bool {
 		return vms[i].Name < vms[j].Name
 	})
 
-	return vms, err
+	return vms, nil
 }
