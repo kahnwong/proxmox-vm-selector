@@ -40,8 +40,9 @@ func getVirtualMachinesToPowerOff(vms proxmox.VirtualMachines, virtualMachinesTo
 	return subtractArrays(virtualMachinesAll, virtualMachinesToPowerOn)
 }
 
-func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) error {
+func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string, taskChan chan error) {
 	vmPowerOnCounter := 0
+	defer close(taskChan)
 	for _, vmName := range virtualMachinesToPowerOn {
 		for _, vm := range vms {
 			if vmName == vm.Name {
@@ -50,37 +51,31 @@ func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) err
 					vmPowerOnCounter = vmPowerOnCounter + 1
 
 					_, err := vm.Start(context.Background())
-					if err != nil {
-						return err
-					}
+					taskChan <- err
 				}
 			}
 		}
 	}
+
 	if vmPowerOnCounter == 0 {
 		fmt.Println("No virtual machines to start")
 	}
-
-	return nil
 }
 
-func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string) error {
+func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string, taskChan chan error) {
+	defer close(taskChan)
 	for _, vmName := range virtualMachinesToPowerOff {
 		for _, vm := range vms {
 			if vmName == vm.Name {
 				fmt.Printf("⏸️ Stopping %s...\n", vmName)
 				_, err := vm.Stop(context.Background())
-				if err != nil {
-					return err
-				}
+				taskChan <- err
 			}
 		}
 	}
 	if len(virtualMachinesToPowerOff) == 0 {
 		fmt.Println("No virtual machines to stop")
 	}
-
-	return nil
 }
 
 func main() {
@@ -133,13 +128,19 @@ func main() {
 	// start/stop VMs
 	virtualMachinesToPowerOff := getVirtualMachinesToPowerOff(vms, virtualMachinesToPowerOn)
 
-	err = startVm(vms, virtualMachinesToPowerOn)
-	if err != nil {
-		log.Fatal(err)
+	startVmChan := make(chan error)
+	go startVm(vms, virtualMachinesToPowerOn, startVmChan)
+	for err := range startVmChan {
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 
-	err = stopVm(vms, virtualMachinesToPowerOff)
-	if err != nil {
-		log.Fatal(err)
+	stopVmChan := make(chan error)
+	go stopVm(vms, virtualMachinesToPowerOff, stopVmChan)
+	for err := range stopVmChan {
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
