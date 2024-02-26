@@ -4,62 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
-	"sort"
 
 	"github.com/luthermonson/go-proxmox"
 
 	"github.com/charmbracelet/huh"
 	"github.com/joho/godotenv"
 )
-
-// base
-func initClient() *proxmox.Client {
-	credentials := proxmox.Credentials{
-		Username: os.Getenv("PROXMOX_VE_USERNAME"),
-		Password: os.Getenv("PROXMOX_VE_PASSWORD"),
-	}
-
-	proxmoxAPIEndpoint := fmt.Sprintf("https://%s/api2/json", os.Getenv("PROXMOX_VE_HOST"))
-	client := proxmox.NewClient(proxmoxAPIEndpoint,
-		proxmox.WithCredentials(&credentials),
-	)
-
-	return client
-}
-
-func getVersion(client *proxmox.Client) string {
-	version, err := client.Version(context.Background())
-	if err != nil {
-		panic(err)
-	}
-
-	return version.Release
-}
-
-// vm
-func getNode(client *proxmox.Client) *proxmox.Node {
-	node, err := client.Node(context.Background(), os.Getenv("PROXMOX_VE_NODENAME"))
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return node
-}
-
-func getVMs(node *proxmox.Node) proxmox.VirtualMachines {
-	vms, err := node.VirtualMachines(context.Background())
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	// sort output by VM name
-	sort.Slice(vms, func(i, j int) bool {
-		return vms[i].Name < vms[j].Name
-	})
-
-	return vms
-}
 
 // form
 func createFormOptions(vms proxmox.VirtualMachines) []huh.Option[string] {
@@ -94,7 +46,6 @@ func createFormOptions(vms proxmox.VirtualMachines) []huh.Option[string] {
 }
 
 // main
-// subtractArrays subtracts elements of array2 from array1
 func subtractArrays(array1, array2 []string) []string {
 	var result []string
 
@@ -114,6 +65,54 @@ func subtractArrays(array1, array2 []string) []string {
 	return result
 }
 
+func getVirtualMachinesToPowerOff(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) []string {
+	var virtualMachinesAll []string
+	for _, v := range vms {
+		virtualMachinesAll = append(virtualMachinesAll, v.Name)
+	}
+
+	return subtractArrays(virtualMachinesAll, virtualMachinesToPowerOn)
+}
+
+func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) {
+	vmPowerOnCounter := 0
+	for _, vmName := range virtualMachinesToPowerOn {
+		for _, vm := range vms {
+			if vmName == vm.Name {
+				if vm.Status != "running" {
+					fmt.Printf("▶️ Starting %s...\n", vmName)
+					vmPowerOnCounter = vmPowerOnCounter + 1
+
+					_, err := vm.Start(context.Background())
+					if err != nil {
+						fmt.Println(err)
+					}
+				}
+			}
+		}
+	}
+	if vmPowerOnCounter == 0 {
+		fmt.Println("No virtual machines to start")
+	}
+}
+
+func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string) {
+	for _, vmName := range virtualMachinesToPowerOff {
+		for _, vm := range vms {
+			if vmName == vm.Name {
+				fmt.Printf("⏸️ Stopping %s...\n", vmName)
+				_, err := vm.Stop(context.Background())
+				if err != nil {
+					fmt.Println(err)
+				}
+			}
+		}
+	}
+	if len(virtualMachinesToPowerOff) == 0 {
+		fmt.Println("No virtual machines to stop")
+	}
+}
+
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -124,12 +123,22 @@ func main() {
 	client := initClient()
 
 	// print version
-	version := getVersion(client)
+	version, err := getVersion(client)
+	if err != nil {
+		slog.Error("Cannot obtain Proxmox VE Version.")
+	}
 	fmt.Printf("Proxmox VE Version: %s\n", version)
 
 	// list VMs
-	node := getNode(client)
-	vms := getVMs(node)
+	node, err := getNode(client)
+	if err != nil {
+		slog.Error(fmt.Sprintf("Specified Proxmox VE Node `%s` does not exist.", os.Getenv("PROXMOX_VE_NODENAME")))
+	}
+
+	vms, err := getVMs(node)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// init form
 	var (
@@ -152,45 +161,7 @@ func main() {
 	}
 
 	// start/stop VMs
-	var virtualMachinesAll []string
-	for _, v := range vms {
-		virtualMachinesAll = append(virtualMachinesAll, v.Name)
-	}
-
-	virtualMachinesToPowerOff := subtractArrays(virtualMachinesAll, virtualMachinesToPowerOn)
-
-	vmPowerOnCounter := 0
-	for _, vmName := range virtualMachinesToPowerOn {
-		for _, vm := range vms {
-			if vmName == vm.Name {
-				if vm.Status != "running" {
-					fmt.Printf("▶️ Starting %s...\n", vmName)
-					vmPowerOnCounter = vmPowerOnCounter + 1
-
-					_, err = vm.Start(context.Background())
-					if err != nil {
-						fmt.Println(err)
-					}
-				}
-			}
-		}
-	}
-	if vmPowerOnCounter == 0 {
-		fmt.Println("No virtual machines to start")
-	}
-
-	for _, vmName := range virtualMachinesToPowerOff {
-		for _, vm := range vms {
-			if vmName == vm.Name {
-				fmt.Printf("⏸️ Stopping %s...\n", vmName)
-				_, err = vm.Stop(context.Background())
-				if err != nil {
-					fmt.Println(err)
-				}
-			}
-		}
-	}
-	if len(virtualMachinesToPowerOff) == 0 {
-		fmt.Println("No virtual machines to stop")
-	}
+	virtualMachinesToPowerOff := getVirtualMachinesToPowerOff(vms, virtualMachinesToPowerOn)
+	startVm(vms, virtualMachinesToPowerOn)
+	stopVm(vms, virtualMachinesToPowerOff)
 }
