@@ -7,13 +7,11 @@ import (
 	"log/slog"
 	"os"
 
-	"github.com/luthermonson/go-proxmox"
-
 	"github.com/charmbracelet/huh"
 	"github.com/joho/godotenv"
+	"github.com/luthermonson/go-proxmox"
 )
 
-// main
 func subtractArrays(array1, array2 []string) []string {
 	var result []string
 
@@ -42,7 +40,7 @@ func getVirtualMachinesToPowerOff(vms proxmox.VirtualMachines, virtualMachinesTo
 	return subtractArrays(virtualMachinesAll, virtualMachinesToPowerOn)
 }
 
-func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) {
+func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) error {
 	vmPowerOnCounter := 0
 	for _, vmName := range virtualMachinesToPowerOn {
 		for _, vm := range vms {
@@ -53,7 +51,7 @@ func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) {
 
 					_, err := vm.Start(context.Background())
 					if err != nil {
-						fmt.Println(err)
+						return err
 					}
 				}
 			}
@@ -62,16 +60,18 @@ func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) {
 	if vmPowerOnCounter == 0 {
 		fmt.Println("No virtual machines to start")
 	}
+
+	return nil
 }
 
-func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string) {
+func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string) error {
 	for _, vmName := range virtualMachinesToPowerOff {
 		for _, vm := range vms {
 			if vmName == vm.Name {
 				fmt.Printf("⏸️ Stopping %s...\n", vmName)
 				_, err := vm.Stop(context.Background())
 				if err != nil {
-					fmt.Println(err)
+					return err
 				}
 			}
 		}
@@ -79,6 +79,8 @@ func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string) {
 	if len(virtualMachinesToPowerOff) == 0 {
 		fmt.Println("No virtual machines to stop")
 	}
+
+	return nil
 }
 
 func main() {
@@ -130,6 +132,14 @@ func main() {
 
 	// start/stop VMs
 	virtualMachinesToPowerOff := getVirtualMachinesToPowerOff(vms, virtualMachinesToPowerOn)
-	startVm(vms, virtualMachinesToPowerOn)
-	stopVm(vms, virtualMachinesToPowerOff)
+
+	err = startVm(vms, virtualMachinesToPowerOn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = stopVm(vms, virtualMachinesToPowerOff)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
