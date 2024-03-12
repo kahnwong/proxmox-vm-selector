@@ -63,17 +63,22 @@ func startVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string, tas
 }
 
 func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string, taskChan chan error) {
+	vmPowerOffCounter := 0
 	defer close(taskChan)
 	for _, vmName := range virtualMachinesToPowerOff {
 		for _, vm := range vms {
 			if vmName == vm.Name {
-				fmt.Printf("⏸️ Stopping %s...\n", vmName)
-				_, err := vm.Stop(context.Background())
-				taskChan <- err
+				if vm.Status == "running" {
+					fmt.Printf("⏸️ Stopping %s...\n", vmName)
+					vmPowerOffCounter = vmPowerOffCounter + 1
+
+					_, err := vm.Stop(context.Background())
+					taskChan <- err
+				}
 			}
 		}
 	}
-	if len(virtualMachinesToPowerOff) == 0 {
+	if vmPowerOffCounter == 0 {
 		fmt.Println("No virtual machines to stop")
 	}
 }
