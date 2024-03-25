@@ -5,7 +5,7 @@ go 1.21.5
 require (
 	github.com/charmbracelet/huh v0.3.0
 	github.com/joho/godotenv v1.5.1
-	github.com/luthermonson/go-proxmox v0.0.0-beta3
+	github.com/luthermonson/go-proxmox v0.0.0-beta6
 )
 
 require (
