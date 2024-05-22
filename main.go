@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/charmbracelet/huh"
-	"github.com/joho/godotenv"
 	"github.com/luthermonson/go-proxmox"
 )
 
@@ -84,10 +83,10 @@ func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string, tas
 }
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		fmt.Println("Loading env from env var instead...")
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 	fmt.Println("Loading env from env var instead...")
+	// }
 
 	// init
 	client := initClient()
