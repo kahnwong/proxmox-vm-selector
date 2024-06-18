@@ -15,8 +15,8 @@ func createFormOptions(vms proxmox.VirtualMachines) []huh.Option[string] {
 		vmStatus := v.Status
 
 		vmStatusSymbolMap := map[string]string{
-			"running": "✅",
-			"stopped": "🛑",
+			"running": "🟢",
+			"stopped": "🔴",
 		}
 
 		var vmStatysSymbol string
