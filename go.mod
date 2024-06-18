@@ -3,7 +3,7 @@ module github.com/kahnwong/proxmox-vm-selector
 go 1.21.5
 
 require (
-	github.com/charmbracelet/huh v0.3.0
+	github.com/charmbracelet/huh v0.4.2
 	github.com/getsops/sops/v3 v3.8.1
 	github.com/luthermonson/go-proxmox v0.0.0-beta6
 	gopkg.in/yaml.v3 v3.0.1
@@ -41,13 +41,19 @@ require (
 	github.com/buger/goterm v1.0.4 // indirect
 	github.com/catppuccin/go v0.2.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
-	github.com/charmbracelet/bubbles v0.17.2-0.20240108170749-ec883029c8e6 // indirect
-	github.com/charmbracelet/bubbletea v0.25.0 // indirect
-	github.com/charmbracelet/lipgloss v0.9.1 // indirect
+	github.com/charmbracelet/bubbles v0.18.0 // indirect
+	github.com/charmbracelet/bubbletea v0.26.3 // indirect
+	github.com/charmbracelet/lipgloss v0.11.0 // indirect
+	github.com/charmbracelet/x/ansi v0.1.1 // indirect
+	github.com/charmbracelet/x/exp/strings v0.0.0-20240524151031-ff83003bf67a // indirect
+	github.com/charmbracelet/x/input v0.1.1 // indirect
+	github.com/charmbracelet/x/term v0.1.1 // indirect
+	github.com/charmbracelet/x/windows v0.1.2 // indirect
 	github.com/cloudflare/circl v1.3.7 // indirect
-	github.com/containerd/console v1.0.4-0.20230313162750-1ae8d489ac81 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/diskfs/go-diskfs v1.2.0 // indirect
+	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/getsops/gopgagent v0.0.0-20170926210634-4d7ea76ff71a // indirect
 	github.com/go-jose/go-jose/v3 v3.0.3 // indirect
@@ -85,15 +91,15 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/muesli/ansi v0.0.0-20230316100256-276c6243b2f6 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
-	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/rivo/uniseg v0.4.4 // indirect
+	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/urfave/cli v1.22.14 // indirect
+	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.24.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
