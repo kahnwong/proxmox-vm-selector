@@ -5,7 +5,7 @@ go 1.21.5
 require (
 	github.com/charmbracelet/huh v0.5.1
 	github.com/getsops/sops/v3 v3.9.0
-	github.com/luthermonson/go-proxmox v0.0.0-beta6
+	github.com/luthermonson/go-proxmox v0.1.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
