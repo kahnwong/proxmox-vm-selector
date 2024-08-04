@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
-	"log/slog"
-	"os"
 
 	"github.com/charmbracelet/huh"
 	"github.com/luthermonson/go-proxmox"
+	"github.com/rs/zerolog/log"
+)
+
+var (
+	virtualMachinesToPowerOn []string // huh data model
 )
 
 func getVirtualMachinesToPowerOff(vms proxmox.VirtualMachines, virtualMachinesToPowerOn []string) []string {
@@ -64,37 +66,29 @@ func stopVm(vms proxmox.VirtualMachines, virtualMachinesToPowerOff []string, tas
 }
 
 func main() {
-	// err := godotenv.Load()
-	// if err != nil {
-	// 	fmt.Println("Loading env from env var instead...")
-	// }
-
 	// init
 	client := initClient()
 
 	// print version
 	version, err := getVersion(client)
 	if err != nil {
-		slog.Error("Cannot obtain Proxmox VE Version.")
+		log.Fatal().Err(err).Msg("Cannot obtain Proxmox VE Version.")
+	} else {
+		fmt.Printf("Proxmox VE Version: %s\n", version)
 	}
-	fmt.Printf("Proxmox VE Version: %s\n", version)
 
 	// list VMs
 	node, err := getNode(client)
 	if err != nil {
-		slog.Error(fmt.Sprintf("Specified Proxmox VE Node `%s` does not exist.", os.Getenv("PROXMOX_VE_NODENAME")))
+		log.Fatal().Err(err).Msgf("Specified Proxmox VE Node does not exist.")
 	}
 
 	vms, err := getVMs(node)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal().Err(err).Msgf("Cannot obtain list of VMs.")
 	}
 
 	// init form
-	var (
-		virtualMachinesToPowerOn []string
-	)
-
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewMultiSelect[string]().
@@ -107,7 +101,7 @@ func main() {
 	)
 	err = form.Run()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
 
 	// start/stop VMs
@@ -117,7 +111,7 @@ func main() {
 	go startVm(vms, virtualMachinesToPowerOn, startVmChan)
 	for err := range startVmChan {
 		if err != nil {
-			fmt.Println(err)
+			log.Error().Msg("Starting VM Failed")
 		}
 	}
 
@@ -125,7 +119,7 @@ func main() {
 	go stopVm(vms, virtualMachinesToPowerOff, stopVmChan)
 	for err := range stopVmChan {
 		if err != nil {
-			fmt.Println(err)
+			log.Err(err).Msg("Stopping VM Failed")
 		}
 	}
 }

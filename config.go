@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/getsops/sops/v3/decrypt"
+	"github.com/rs/zerolog/log"
 	"gopkg.in/yaml.v3"
 )
 
@@ -23,7 +22,7 @@ type Config struct {
 func readConfig() Config {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err).Msg("Error reading user home directory")
 	}
 	filename := filepath.Join(homeDir, ".config", "proxmox", "proxmox.sops.yaml")
 
@@ -31,20 +30,19 @@ func readConfig() Config {
 	_, err = os.Stat(filename)
 
 	if os.IsNotExist(err) {
-		fmt.Printf("File %s does not exist.\n", filename)
-		os.Exit(1)
+		log.Fatal().Err(err).Msgf("File %s does not exist.\n", filename)
 	}
 
 	var config Config
 
 	data, err := decrypt.File(filename, "yaml")
 	if err != nil {
-		fmt.Println(fmt.Printf("Failed to decrypt: %v", err))
+		log.Fatal().Err(err).Msg("Failed to decrypt config file")
 	}
 
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
-		fmt.Printf("error: %v\n", err)
+		log.Fatal().Err(err).Msg("Failed to unmarshal config file")
 	}
 
 	return config
