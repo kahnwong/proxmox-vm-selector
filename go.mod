@@ -6,7 +6,7 @@ toolchain go1.22.5
 require (
 	github.com/charmbracelet/huh v0.6.0
 	github.com/getsops/sops/v3 v3.9.1
-	github.com/luthermonson/go-proxmox v0.1.1
+	github.com/luthermonson/go-proxmox v0.1.2
 	github.com/rs/zerolog v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )
