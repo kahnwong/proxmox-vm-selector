@@ -1,6 +1,6 @@
 module github.com/kahnwong/proxmox-vm-selector
 
-go 1.23
+go 1.23.2
 
 require (
 	github.com/charmbracelet/huh v0.6.0
