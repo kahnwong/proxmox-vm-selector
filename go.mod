@@ -5,7 +5,7 @@ go 1.23.2
 require (
 	github.com/charmbracelet/huh v0.6.0
 	github.com/getsops/sops/v3 v3.9.4
-	github.com/luthermonson/go-proxmox v0.2.1
+	github.com/luthermonson/go-proxmox v0.2.2
 	github.com/rs/zerolog v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -69,7 +69,8 @@ require (
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/cncf/xds/go v0.0.0-20241223141626-cff3c89139a3 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.6 // indirect
-	github.com/diskfs/go-diskfs v1.2.0 // indirect
+	github.com/diskfs/go-diskfs v1.5.0 // indirect
+	github.com/djherbis/times v1.6.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/envoyproxy/go-control-plane v0.13.1 // indirect
 	github.com/envoyproxy/protoc-gen-validate v1.1.0 // indirect
@@ -120,7 +121,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/ryanuber/go-glob v1.0.0 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
+	github.com/sirupsen/logrus v1.9.4-0.20230606125235-dd1b4c2e81af // indirect
 	github.com/urfave/cli v1.22.16 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
 	go.opentelemetry.io/contrib/detectors/gcp v1.33.0 // indirect
