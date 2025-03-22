@@ -6,7 +6,7 @@ require (
 	github.com/charmbracelet/huh v0.6.0
 	github.com/getsops/sops/v3 v3.9.4
 	github.com/luthermonson/go-proxmox v0.2.1
-	github.com/rs/zerolog v1.33.0
+	github.com/rs/zerolog v1.34.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
