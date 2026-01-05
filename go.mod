@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/charmbracelet/huh v0.7.0
 	github.com/getsops/sops/v3 v3.11.0
-	github.com/luthermonson/go-proxmox v0.2.3
+	github.com/luthermonson/go-proxmox v0.3.2
 	github.com/rs/zerolog v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )

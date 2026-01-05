@@ -378,6 +378,8 @@ github.com/lucasb-eyer/go-colorful v1.2.0 h1:1nnpGOrhyZZuNyfu1QjKiUICQ74+3FNCN69
 github.com/lucasb-eyer/go-colorful v1.2.0/go.mod h1:R4dSotOR9KMtayYi1e77YzuveK+i7ruzyGqttikkLy0=
 github.com/luthermonson/go-proxmox v0.2.3 h1:NAjUJ5Jd1ynIK6UHMGd/VLGgNZWpGXhfL+DBmAVSEaA=
 github.com/luthermonson/go-proxmox v0.2.3/go.mod h1:oyFgg2WwTEIF0rP6ppjiixOHa5ebK1p8OaRiFhvICBQ=
+github.com/luthermonson/go-proxmox v0.3.2 h1:/zUg6FCl9cAABx0xU3OIgtDtClY0gVXxOCsrceDNylc=
+github.com/luthermonson/go-proxmox v0.3.2/go.mod h1:oyFgg2WwTEIF0rP6ppjiixOHa5ebK1p8OaRiFhvICBQ=
 github.com/magefile/mage v1.14.0 h1:6QDX3g6z1YvJ4olPhT1wksUcSa/V0a1B+pJb73fBjyo=
 github.com/magefile/mage v1.14.0/go.mod h1:z5UZb/iS3GoOSn0JgWuiw7dxlurVYTu+/jHXqQg881A=
 github.com/mattn/go-colorable v0.1.13/go.mod h1:7S9/ev0klgBDR4GtXTXX8a3vIGJpMovkB8vQcUbaXHg=
