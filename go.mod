@@ -5,7 +5,7 @@ go 1.25
 require (
 	github.com/charmbracelet/huh v0.8.0
 	github.com/getsops/sops/v3 v3.11.0
-	github.com/luthermonson/go-proxmox v0.3.2
+	github.com/luthermonson/go-proxmox v0.4.0
 	github.com/rs/zerolog v1.33.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -71,7 +71,7 @@ require (
 	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/cncf/xds/go v0.0.0-20250501225837-2ac532fd4443 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
-	github.com/diskfs/go-diskfs v1.5.0 // indirect
+	github.com/diskfs/go-diskfs v1.7.0 // indirect
 	github.com/djherbis/times v1.6.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/envoyproxy/go-control-plane/envoy v1.32.4 // indirect
