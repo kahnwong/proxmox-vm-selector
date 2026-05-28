@@ -3,7 +3,7 @@ module github.com/kahnwong/proxmox-vm-selector
 go 1.25.0
 
 require (
-	github.com/charmbracelet/huh v0.8.0
+	github.com/charmbracelet/huh/v2 v2.0.3
 	github.com/getsops/sops/v3 v3.12.1
 	github.com/luthermonson/go-proxmox v0.4.0
 	github.com/rs/zerolog v1.34.0
