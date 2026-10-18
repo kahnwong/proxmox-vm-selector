@@ -10,7 +10,7 @@ jobs:
   go-test:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - uses: actions/checkout@v7
       - name: Setup Go
